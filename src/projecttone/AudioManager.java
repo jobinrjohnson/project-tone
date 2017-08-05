@@ -21,7 +21,7 @@ public class AudioManager {
     public static MidiChannel[] midiChannels = null;
 
     public static enum Instruments {
-        PIANO,SOMETHING_ELSE
+        PIANO, SOMETHING_ELSE
     }
 
     public int getInstrumentMidiChannel(Instruments channel) {
@@ -35,22 +35,34 @@ public class AudioManager {
         try {
             synthesizer = MidiSystem.getSynthesizer();
             midiChannels = synthesizer.getChannels();
+            synthesizer.open();
         } catch (MidiUnavailableException ex) {
             Logger.getLogger(AudioManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void play(int note, int volume, Instruments instrument, int duration) {
-        int channel = getInstrumentMidiChannel(instrument);
-        int playerVolume = 127 * 100 / volume;
-        try {
-            synthesizer.open();
-            midiChannels[channel].noteOn(note, playerVolume); // C note
-            Thread.sleep(duration);
-            midiChannels[channel].noteOff(note);
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                int channel = getInstrumentMidiChannel(instrument);
+                int playerVolume = 127 * 100 / volume;
+                try {
+                    midiChannels[channel].noteOn(note, playerVolume); // C note
+                    Thread.sleep(duration);
+                    midiChannels[channel].noteOff(note);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+    }
+
+    public void closeSynth() {
+        if (synthesizer.isOpen()) {
             synthesizer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

@@ -5,6 +5,8 @@
  */
 package projecttone;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.DefaultComboBoxModel;
 import projecttone.AudioManager.Instruments;
 
@@ -14,12 +16,21 @@ import projecttone.AudioManager.Instruments;
  */
 public class ToneUI extends javax.swing.JFrame {
 
+    AudioManager am;
+
     /**
      * Creates new form ToneUI
      */
     public ToneUI() {
         initComponents();
+        am = new AudioManager();
         instr.setModel(new DefaultComboBoxModel(Instruments.values()));
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                am.closeSynth();
+            }
+        });
     }
 
     /**
@@ -44,9 +55,9 @@ public class ToneUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("note");
+        jLabel1.setText("Note");
 
-        jLabel2.setText("volume");
+        jLabel2.setText("Volume");
 
         jLabel3.setText("Instrument");
 
@@ -121,7 +132,7 @@ public class ToneUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new AudioManager().play(Integer.parseInt(note.getValue().toString()), volume.getValue(),Instruments.values()[instr.getSelectedIndex()], Integer.parseInt(duration.getValue().toString()));
+        am.play(Integer.parseInt(note.getValue().toString()), volume.getValue(), Instruments.values()[instr.getSelectedIndex()], Integer.parseInt(duration.getValue().toString()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
