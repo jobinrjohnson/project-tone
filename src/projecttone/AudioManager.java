@@ -20,7 +20,7 @@ public class AudioManager {
     public static Synthesizer synthesizer = null;
     public static MidiChannel[] midiChannels = null;
 
-    public enum Instruments {
+    public static enum Instruments {
         PIANO,SOMETHING_ELSE
     }
 
