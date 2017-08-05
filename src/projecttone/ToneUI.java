@@ -62,6 +62,7 @@ public class ToneUI extends javax.swing.JFrame {
         octave = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Project  Tone");
 
         jLabel1.setText("Note");
 
