@@ -21,7 +21,7 @@ public class AudioManager {
     public static MidiChannel[] midiChannels = null;
 
     public static enum Instruments {
-        PIANO, SOMETHING_ELSE
+        PIANO, UNKNOWN_1, UNKNOWN_2, UNKNOWN_3, UNKNOWN_4, UNKNOWN_5, UNKNOWN_6, UNKNOWN_7, UNKNOWN_8, DRUMS
     }
 
     public int getInstrumentMidiChannel(Instruments channel) {
