@@ -120,8 +120,7 @@ public class ToneUI extends javax.swing.JFrame {
     }//GEN-LAST:event_noteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    AudioManager.play(Integer.parseInt(note.getText()),Integer.parseInt(volume.getText()),Instruments.valueOf(instrument.getText()) ,Integer.parseInt(duration.getText()));
-        // TODO add your handling code here: 
+        new AudioManager().play(Integer.parseInt(note.getText()), Integer.parseInt(volume.getText()),Instruments.values()[Integer.parseInt(instrument.getText())], Integer.parseInt(duration.getText()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
