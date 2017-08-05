@@ -41,13 +41,13 @@ public class AudioManager {
         }
     }
 
-    public void play(int note, int volume, Instruments instrument, int duration) {
+    public void play(final int note, int volume, Instruments instrument, final int duration) {
+        final int channel = getInstrumentMidiChannel(instrument);
+        final int playerVolume = 127 * 100 / volume;
         new Thread() {
             @Override
             public void run() {
                 super.run();
-                int channel = getInstrumentMidiChannel(instrument);
-                int playerVolume = 127 * 100 / volume;
                 try {
                     midiChannels[channel].noteOn(note, playerVolume); // C note
                     Thread.sleep(duration);
