@@ -39,9 +39,7 @@ public class InputTone extends javax.swing.JFrame {
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
-                if (key >= 35 && key <= 81) {
-                    midiChannels[instrument].noteOff(key);
-                }
+                midiChannels[instrument].noteOff(key);
             }
         });
 
