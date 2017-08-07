@@ -10,4 +10,27 @@ package projecttone;
  */
 public class Tone {
     
+    AudioManager am;
+    
+    public Tone(){
+        am = new AudioManager();
+    }
+    
+    public class Instant{
+        public String note;
+        public int octave;
+        public int duration_ms;
+        public long instant;
+        
+    }
+    
+    public void playTone(Instant[] instants){
+        for(Instant i : instants){
+            new Thread(){
+                
+            }.start();
+        }
+    }
+    
+    
 }
