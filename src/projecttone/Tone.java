@@ -38,25 +38,40 @@ public class Tone {
 
     public void playTone(Instant[] instants) {
         final MidiChannel[] midiChannels = AudioManager.midiChannels;
-        for (Instant i : instants) {
-            new Thread() {
-
-                @Override
-                public void run() {
-                    super.run();
-                    int channel = AudioManager.getInstrumentMidiChannel(i.instrument);
-                    int toneNumber = StandardSet.getToneNumber(i.note, i.octave);
-                    midiChannels[channel].noteOn(toneNumber, i.velocity);
-                    try {
-                        Thread.sleep(i.duration_ms);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Tone.class.getName()).log(Level.SEVERE, null, ex);
+        final int instant = 0;
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                for (Instant i : instants) {
+                    if (instant < i.instant) {
+                        try {
+                            Thread.sleep(i.instant - instant);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Tone.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                    midiChannels[channel].noteOff(toneNumber);
-                }
+                    new Thread() {
 
-            }.start();
-        }
+                        @Override
+                        public void run() {
+                            super.run();
+                            int channel = AudioManager.getInstrumentMidiChannel(i.instrument);
+                            int toneNumber = StandardSet.getToneNumber(i.note, i.octave);
+                            midiChannels[channel].noteOn(toneNumber, i.velocity);
+                            try {
+                                Thread.sleep(i.duration_ms);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Tone.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            midiChannels[channel].noteOff(toneNumber);
+                        }
+
+                    }.start();
+                }
+            }
+
+        }.start();
     }
 
     public void saveTone(Instant[] instants, String fileName) {
