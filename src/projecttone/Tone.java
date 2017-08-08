@@ -26,16 +26,6 @@ public class Tone {
         am = new AudioManager();
     }
 
-    public class Instant {
-
-        public String note;
-        public int octave;
-        public int duration_ms;
-        public long instant;
-        public int velocity = 120;
-        public AudioManager.Instruments instrument;
-    }
-
     public void playTone(Instant[] instants) {
         final MidiChannel[] midiChannels = AudioManager.midiChannels;
         final int instant = 0;

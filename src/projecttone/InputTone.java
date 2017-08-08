@@ -6,6 +6,9 @@ package projecttone;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.midi.MidiChannel;
 import javax.swing.JFrame;
 
@@ -16,6 +19,40 @@ import javax.swing.JFrame;
 public class InputTone extends javax.swing.JFrame {
 
     AudioManager am;
+    ArrayList<Instant> instants;
+
+    class InstantCounter extends Thread {
+
+        public int timer = 0;
+        public boolean terminated = false;
+
+        public void stopTimer() {
+            terminated = true;
+        }
+
+        public void resetTimer() {
+            timer = 0;
+        }
+
+        public int getInstant() {
+            return timer;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            while (!terminated) {
+                try {
+                    sleep(1);
+                    timer++;
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(InputTone.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }
+
+    }
 
     /**
      * Creates new form InputTone
@@ -23,23 +60,38 @@ public class InputTone extends javax.swing.JFrame {
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        InstantCounter counter = new InstantCounter();
+        counter.start();
 
         am = new AudioManager();
         final MidiChannel[] midiChannels = AudioManager.midiChannels;
 
-        int instrument = 0;
+        instants = new ArrayList<Instant>();
+
+        AudioManager.Instruments instrument = AudioManager.Instruments.PIANO;
+        int minstrument = 0;
         int strength = 90;
 
         this.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
+                
+                Instant i = new Instant();
+                i.instrument = instrument;
+                i.instant = counter.getInstant();
+                i.octave = 5;
+                i.velocity = strength;
+                i.duration_ms = 2;
+                instants.add(i);
+                
                 jLabel1.setText("Key : " + key);
-                midiChannels[instrument].noteOn(key, strength);
+                midiChannels[minstrument].noteOn(key, strength);
             }
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
-                midiChannels[instrument].noteOff(key);
+                midiChannels[minstrument].noteOff(key);
             }
         });
 
@@ -64,6 +116,11 @@ public class InputTone extends javax.swing.JFrame {
 
         jButton1.setText("Save");
         jButton1.setFocusable(false);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Discard");
         jButton2.setFocusable(false);
@@ -96,6 +153,12 @@ public class InputTone extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Instant[] castedInstants = instants.toArray(new Instant[0]);
+        new Tone().saveTone(castedInstants, "tone1");
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
