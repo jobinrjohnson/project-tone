@@ -4,11 +4,13 @@
  */
 package projecttone;
 
+import java.io.Serializable;
+
 /**
  *
  * @author jobinrjohnson
  */
-public class Instant {
+public class Instant implements Serializable{
 
     public String note;
     public int octave;
