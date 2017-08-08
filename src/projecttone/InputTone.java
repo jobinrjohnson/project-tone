@@ -7,10 +7,12 @@ package projecttone;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.midi.MidiChannel;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,10 +22,12 @@ public class InputTone extends javax.swing.JFrame {
 
     AudioManager am;
     ArrayList<Instant> instants;
+    HashMap<String, Instant> waiting_for_duration;
+    InstantCounter counter = null;
 
     class InstantCounter extends Thread {
 
-        public int timer = 0;
+        public long timer = 0;
         public boolean terminated = false;
 
         public void stopTimer() {
@@ -34,7 +38,7 @@ public class InputTone extends javax.swing.JFrame {
             timer = 0;
         }
 
-        public int getInstant() {
+        public long getInstant() {
             return timer;
         }
 
@@ -60,38 +64,44 @@ public class InputTone extends javax.swing.JFrame {
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        InstantCounter counter = new InstantCounter();
-        counter.start();
 
         am = new AudioManager();
         final MidiChannel[] midiChannels = AudioManager.midiChannels;
 
         instants = new ArrayList<Instant>();
+        waiting_for_duration = new HashMap<String, Instant>();
 
         AudioManager.Instruments instrument = AudioManager.Instruments.PIANO;
-        int minstrument = 0;
+        int mInstrument = 0;
         int strength = 90;
 
         this.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                
+                if (counter == null) {
+                    counter = new InstantCounter();
+                    counter.start();
+                }
                 Instant i = new Instant();
                 i.instrument = instrument;
                 i.instant = counter.getInstant();
                 i.octave = 5;
                 i.velocity = strength;
                 i.duration_ms = 2;
+                i.note = "C#"; //TODO - Change here
                 instants.add(i);
-                
+                waiting_for_duration.put(i.note, i);
+
                 jLabel1.setText("Key : " + key);
-                midiChannels[minstrument].noteOn(key, strength);
+                midiChannels[mInstrument].noteOn(key, strength);
             }
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
-                midiChannels[minstrument].noteOff(key);
+                String note = "C#"; //TODO - Change here
+                Instant i = waiting_for_duration.get(note);
+                i.duration_ms = (int) (counter.timer - i.instant);
+                midiChannels[mInstrument].noteOff(key);
             }
         });
 
@@ -124,6 +134,11 @@ public class InputTone extends javax.swing.JFrame {
 
         jButton2.setText("Discard");
         jButton2.setFocusable(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -156,9 +171,23 @@ public class InputTone extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Instant[] castedInstants = instants.toArray(new Instant[0]);
-        new Tone().saveTone(castedInstants, "tone1");
-        
+        counter.stopTimer();
+        counter = null;
+        String name = JOptionPane.showInputDialog("Save as");
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Empty String");
+            return;
+        }
+        new Tone().saveTone(castedInstants, name.trim());
+        instants.clear();
+        waiting_for_duration.clear();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        instants.clear();
+        waiting_for_duration.clear();
+        counter = null;
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

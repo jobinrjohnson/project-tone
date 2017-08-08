@@ -67,7 +67,7 @@ public class Tone {
     public void saveTone(Instant[] instants, String fileName) {
         ObjectOutputStream out = null;
         try {
-            out = new ObjectOutputStream(new FileOutputStream(fileName + ".dat"));
+            out = new ObjectOutputStream(new FileOutputStream("stored_tones/" + fileName + ".dat"));
             out.writeObject(instants);
             out.flush();
             out.close();
@@ -84,7 +84,7 @@ public class Tone {
 
     public Instant[] retriveTone(String fileName) {
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName + ".dat"));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("stored_tones/" + fileName + ".dat"));
             Instant[] array = (Instant[]) in.readObject();
             in.close();
             return array;
