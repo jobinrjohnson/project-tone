@@ -33,6 +33,10 @@ public class ProjectTone {
         InputTone ui = new InputTone();
         ui.setLocationRelativeTo(null);
         ui.setVisible(true);
+
+//        Tone tone = new Tone();
+//        tone.playTone(tone.retriveTone("tone1"));
+
     }
     
 }
