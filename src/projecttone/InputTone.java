@@ -182,7 +182,7 @@ public class InputTone extends javax.swing.JFrame {
                 waiting_for_duration.put(i.note, i);
 
                 jLabel1.setText("Key : " + keyToTone(key));
-                midiChannels[mInstrument].noteOn(keyToNumber(key), strength);
+                midiChannels[mInstrument].noteOn(keyToNumber(key)+(5*12), strength);
             }
 
             public void keyReleased(KeyEvent e) {
