@@ -21,6 +21,7 @@ import static projecttone.AudioManager.midiChannels;
 public class Tone {
 
     AudioManager am;
+    long instant = 0;
 
     public Tone() {
         am = new AudioManager();
@@ -28,7 +29,6 @@ public class Tone {
 
     public void playTone(Instant[] instants) {
         final MidiChannel[] midiChannels = AudioManager.midiChannels;
-        final int instant = 0;
         new Thread() {
             @Override
             public void run() {
@@ -37,6 +37,7 @@ public class Tone {
                     if (instant < i.instant) {
                         try {
                             Thread.sleep(i.instant - instant);
+                            instant = i.instant;
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Tone.class.getName()).log(Level.SEVERE, null, ex);
                         }
