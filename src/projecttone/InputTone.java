@@ -61,95 +61,54 @@ public class InputTone extends javax.swing.JFrame {
     /**
      * Creates new form InputTone
      */
-    
-    public String keyToTone(int key){
-        String Tone="";
-        switch(key){
+    public String keyToTone(int key) {
+        return (StandardSet.Notes[keyToNumber(key)]);
+    }
+
+    public int keyToNumber(int key) {
+        int Tone = 0;
+        switch (key) {
             case 81:
-                Tone=StandardSet.Notes[0];
+                Tone = 0;
                 break;
             case 87:
-                Tone=StandardSet.Notes[1];
+                Tone = 1;
                 break;
             case 69:
-                Tone=StandardSet.Notes[2];
+                Tone = 2;
                 break;
             case 82:
-                Tone=StandardSet.Notes[3];
+                Tone = 3;
                 break;
             case 84:
-                Tone=StandardSet.Notes[4];
+                Tone = 4;
                 break;
             case 89:
-                Tone=StandardSet.Notes[5];
+                Tone = 5;
                 break;
             case 85:
-                Tone=StandardSet.Notes[6];
+                Tone = 6;
                 break;
             case 73:
-                Tone=StandardSet.Notes[7];
+                Tone = 7;
                 break;
             case 79:
-                Tone=StandardSet.Notes[8];
+                Tone = 8;
                 break;
             case 80:
-                Tone=StandardSet.Notes[9];
+                Tone = 9;
                 break;
             case 91:
-                Tone=StandardSet.Notes[10];
+                Tone = 10;
                 break;
             case 93:
-                Tone=StandardSet.Notes[11];
+                Tone = 11;
                 break;
 
         }
-        return(Tone);
+        return (Tone);
     }
-    
-    public int keyToNumber(int key){
-        int Tone=0;
-        switch(key){
-            case 81:
-                Tone=0;
-                break;
-            case 87:
-                Tone=1;
-                break;
-            case 69:
-                Tone=2;
-                break;
-            case 82:
-                Tone=3;
-                break;
-            case 84:
-                Tone=4;
-                break;
-            case 89:
-                Tone=5;
-                break;
-            case 85:
-                Tone=6;
-                break;
-            case 73:
-                Tone=7;
-                break;
-            case 79:
-                Tone=8;
-                break;
-            case 80:
-                Tone=9;
-                break;
-            case 91:
-                Tone=10;
-                break;
-            case 93:
-                Tone=11;
-                break;
 
-        }
-        return(Tone);
-    }
-    
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -163,6 +122,7 @@ public class InputTone extends javax.swing.JFrame {
         AudioManager.Instruments instrument = AudioManager.Instruments.PIANO;
         int mInstrument = 0;
         int strength = 90;
+        int octave = 5;
 
         this.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
@@ -177,20 +137,23 @@ public class InputTone extends javax.swing.JFrame {
                 i.octave = 5;
                 i.velocity = strength;
                 i.duration_ms = 2;
-                i.note = "C#"; //TODO - Change here
+                i.note = keyToTone(key);
                 instants.add(i);
                 waiting_for_duration.put(i.note, i);
 
                 jLabel1.setText("Key : " + keyToTone(key));
-                midiChannels[mInstrument].noteOn(keyToNumber(key), strength);
+                midiChannels[mInstrument].noteOn(StandardSet.getToneNumber(i.note, i.octave), strength);
             }
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
-                String note = "C#"; //TODO - Change here
+                String note = keyToTone(key);
                 Instant i = waiting_for_duration.get(note);
+                if (i == null) {
+                    return;
+                }
                 i.duration_ms = (int) (counter.timer - i.instant);
-                midiChannels[mInstrument].noteOff(key);
+                midiChannels[mInstrument].noteOff(StandardSet.getToneNumber(i.note, i.octave));
             }
         });
 
