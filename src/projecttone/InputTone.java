@@ -61,6 +61,95 @@ public class InputTone extends javax.swing.JFrame {
     /**
      * Creates new form InputTone
      */
+    
+    public String keyToTone(int key){
+        String Tone="";
+        switch(key){
+            case 81:
+                Tone=StandardSet.Notes[0];
+                break;
+            case 87:
+                Tone=StandardSet.Notes[1];
+                break;
+            case 69:
+                Tone=StandardSet.Notes[2];
+                break;
+            case 82:
+                Tone=StandardSet.Notes[3];
+                break;
+            case 84:
+                Tone=StandardSet.Notes[4];
+                break;
+            case 89:
+                Tone=StandardSet.Notes[5];
+                break;
+            case 85:
+                Tone=StandardSet.Notes[6];
+                break;
+            case 73:
+                Tone=StandardSet.Notes[7];
+                break;
+            case 79:
+                Tone=StandardSet.Notes[8];
+                break;
+            case 80:
+                Tone=StandardSet.Notes[9];
+                break;
+            case 91:
+                Tone=StandardSet.Notes[10];
+                break;
+            case 93:
+                Tone=StandardSet.Notes[11];
+                break;
+
+        }
+        return(Tone);
+    }
+    
+    public int keyToNumber(int key){
+        int Tone=0;
+        switch(key){
+            case 81:
+                Tone=0;
+                break;
+            case 87:
+                Tone=1;
+                break;
+            case 69:
+                Tone=2;
+                break;
+            case 82:
+                Tone=3;
+                break;
+            case 84:
+                Tone=4;
+                break;
+            case 89:
+                Tone=5;
+                break;
+            case 85:
+                Tone=6;
+                break;
+            case 73:
+                Tone=7;
+                break;
+            case 79:
+                Tone=8;
+                break;
+            case 80:
+                Tone=9;
+                break;
+            case 91:
+                Tone=10;
+                break;
+            case 93:
+                Tone=11;
+                break;
+
+        }
+        return(Tone);
+    }
+    
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,8 +181,8 @@ public class InputTone extends javax.swing.JFrame {
                 instants.add(i);
                 waiting_for_duration.put(i.note, i);
 
-                jLabel1.setText("Key : " + key);
-                midiChannels[mInstrument].noteOn(key, strength);
+                jLabel1.setText("Key : " + keyToTone(key));
+                midiChannels[mInstrument].noteOn(keyToNumber(key), strength);
             }
 
             public void keyReleased(KeyEvent e) {
