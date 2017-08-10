@@ -109,6 +109,7 @@ public class InputTone extends javax.swing.JFrame {
         return (Tone);
     }
 
+    public int octave = 5;
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -124,11 +125,17 @@ public class InputTone extends javax.swing.JFrame {
         AudioManager.Instruments instrument = AudioManager.Instruments.PIANO;
         int mInstrument = 0;
         int strength = 90;
-        int octave = 5;
 
         jTextField1.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
+                if(key==38){
+                    octal++;
+                }
+                else if(key==40){
+                    octal--;
+                }
+                else{
                 if (counter == null) {
                     counter = new InstantCounter();
                     counter.start();
@@ -146,7 +153,8 @@ public class InputTone extends javax.swing.JFrame {
                 jTextField1.setText("");
                 jLabel1.setText("Key : " + keyToTone(key));
                 midiChannels[mInstrument].noteOn(StandardSet.getToneNumber(i.note, i.octave), strength);
-            }
+                }
+                }
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
