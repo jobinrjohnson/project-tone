@@ -24,6 +24,7 @@ public class InputTone extends javax.swing.JFrame {
     ArrayList<Instant> instants;
     HashMap<String, Instant> waiting_for_duration;
     InstantCounter counter = null;
+    public int octave = 5;
 
     class InstantCounter extends Thread {
 
@@ -109,7 +110,6 @@ public class InputTone extends javax.swing.JFrame {
         return (Tone);
     }
 
-    public int octave = 5;
     public InputTone() {
         initComponents();
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -129,32 +129,31 @@ public class InputTone extends javax.swing.JFrame {
         jTextField1.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                if(key==38){
-                    octal++;
-                }
-                else if(key==40){
-                    octal--;
-                }
-                else{
-                if (counter == null) {
-                    counter = new InstantCounter();
-                    counter.start();
-                }
-                Instant i = new Instant();
-                i.instrument = instrument;
-                i.instant = counter.getInstant();
-                i.octave = 5;
-                i.velocity = strength;
-                i.duration_ms = 2;
-                i.note = keyToTone(key);
-                instants.add(i);
-                waiting_for_duration.put(i.note, i);
+                if (key == 38) {
+                    octave++;
+                } else if (key == 40) {
+                    octave--;
+                } else {
+                    if (counter == null) {
+                        counter = new InstantCounter();
+                        counter.start();
+                    }
+                    Instant i = new Instant();
+                    i.instrument = instrument;
+                    i.instant = counter.getInstant();
+                    i.octave = octave;
+                    i.velocity = strength;
+                    i.duration_ms = 2;
+                    i.note = keyToTone(key);
+                    instants.add(i);
+                    waiting_for_duration.put(i.note, i);
 
-                jTextField1.setText("");
-                jLabel1.setText("Key : " + keyToTone(key));
-                midiChannels[mInstrument].noteOn(StandardSet.getToneNumber(i.note, i.octave), strength);
+                    jTextField1.setText("");
+                    jLabel1.setText("Key : " + keyToTone(key));
+                    midiChannels[mInstrument].noteOn(StandardSet.getToneNumber(i.note, i.octave), strength);
                 }
-                }
+                lb_octave.setText("Octave : " + octave);
+            }
 
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
@@ -183,6 +182,7 @@ public class InputTone extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
+        lb_octave = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -206,6 +206,8 @@ public class InputTone extends javax.swing.JFrame {
 
         jTextField1.setText("TONE_FOCUS");
 
+        lb_octave.setText("No Octave selected");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -218,15 +220,18 @@ public class InputTone extends javax.swing.JFrame {
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                    .addComponent(lb_octave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(60, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(43, 43, 43)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap(43, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lb_octave, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(78, 78, 78)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -298,5 +303,6 @@ public class InputTone extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lb_octave;
     // End of variables declaration//GEN-END:variables
 }
