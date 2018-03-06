@@ -30,12 +30,7 @@ public class ProjectTone {
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(ProjectTone.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        MainWindow ui = new MainWindow();
-        ui.setLocationRelativeTo(null);
-        ui.setVisible(true);
-
 
     }
-    
+
 }
